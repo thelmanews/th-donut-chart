@@ -170,7 +170,7 @@
 
             var self = this;
 
-            if(!chartData.length || chartData.length<1) {
+            if(!self.chartData.length || self.chartData.length<1) {
               errors.push({input: currentVal, msg: 'Chart data needs to be an array with one data element.'});
             }
 
