@@ -140,6 +140,9 @@
           },
           reset: function() {
              var self = this;
+             self.foreground.attr("d", self.arc.endAngle(0));
+             self.text.text(self.formatPercent(0));
+             self._prevProgress = 0;
 
               
           },
@@ -148,9 +151,16 @@
 
                 var self = this;
                 var progress = self.chartData[0].value;
+
+                // animate is called but the chart has already been animated 
+                // (workaround to make animation work in composer otherwise component logic doesn't require this if block)
+                if(self._prevProgress == progress) {  
+                  self._prevProgress = 0;
+                }
+
                 var total = 100;
                 var i = d3.interpolate(self._prevProgress/total, progress/total);//d3.event.loaded / total);
-                self.foreground.transition().duration(1000).tween("progress", function() {
+                self.foreground.transition().delay(self.animationDelay/2).duration(self.animationDelay).tween("progress", function() {
                   return function(t) {
                     var progress1 = i(t);
                     self.foreground.attr("d", self.arc.endAngle(self.twoPi * progress1));
@@ -159,7 +169,7 @@
                 }).each("end",function() {
                   self.fire('th-animationend',{ element: self});  // is self too much to expose?
 
-                })
+                });
 
                 self._prevProgress = progress; 
           },
@@ -170,7 +180,7 @@
 
             var self = this;
 
-            if(!chartData.length || chartData.length<1) {
+            if(!self.chartData.length || self.chartData.length<1) {
               errors.push({input: currentVal, msg: 'Chart data needs to be an array with one data element.'});
             }
 
