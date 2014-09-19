@@ -57,12 +57,14 @@
                 twoPi = 2 * Math.PI,
                 progress = 0,
                 total = 100,
-                formatPercent = d3.format(".0%"),
                 outerRadius = height*0.49,
                 innerRadius = height*0.32;
                 self._prevProgress = 0;
 
                 self.height = height;
+
+                // Calculate the number of decimal places to display
+                self.decimalPlaces  = self.getDecimalPlaces(self.chartData[0].value);
 
             var foreground, text, arc;
 
@@ -131,7 +133,6 @@
                 .style("stroke", self.chartData[0].color);
 
             self.foreground = foreground;
-            self.formatPercent = formatPercent;
             self.arc = arc;
             self.twoPi = twoPi;
             self.text = text;
@@ -141,7 +142,7 @@
           reset: function() {
              var self = this;
              self.foreground.attr("d", self.arc.endAngle(0));
-             self.text.text(self.formatPercent(0));
+             self.text.text((0).toFixed(self.decimalPlaces)+"%");
              self._prevProgress = 0;
 
               
@@ -164,7 +165,7 @@
                   return function(t) {
                     var progress1 = i(t);
                     self.foreground.attr("d", self.arc.endAngle(self.twoPi * progress1));
-                    self.text.text(self.formatPercent(progress1));
+                    self.text.text((progress1*100).toFixed(self.decimalPlaces)+"%");
                   };
                 }).each("end",function() {
                   self.fire('th-animationend',{ element: self});  // is self too much to expose?
