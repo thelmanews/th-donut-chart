@@ -47,12 +47,14 @@
           init: function() {
 
             var self = this;
+            self.getComputedDims(self);
+            
             var margin = {
                   right : 0,
                   left : 0,
                   label: 3
                 }, 
-                width = self.chartSize*0.95 - margin.left - margin.right, 
+                width = self.computedSize*0.95 - margin.left - margin.right, 
                 height = width,
                 twoPi = 2 * Math.PI,
                 progress = 0,
